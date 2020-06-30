@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home"/>
+
+
+    <item
+        android:id="@+id/nav_gps"
+        android:icon="@drawable/ic_baseline_location"
+        android:title="Find us"/>
+
+    <item android:name="android:actionButtonStyle"
+        android:enabled="false"
+        android:title="space">@style/ActionButtonStyle</item>
+
+    <item
+        android:id="@+id/nav_deals"
+        android:icon="@drawable/ic_baseline_promotions"
+        android:title="Deals"/>
+
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person"
+        android:title="Profile"/>
+
+
+
+
+</menu>
