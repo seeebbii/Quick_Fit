@@ -1,14 +1,13 @@
-package com.example.quickfit.Brands.Services;
+package com.example.quickfit.Services;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.quickfit.R;
+
+import androidx.fragment.app.Fragment;
 
 
 public class ServiceFragment extends Fragment {
