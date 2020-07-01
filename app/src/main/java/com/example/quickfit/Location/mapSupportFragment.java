@@ -58,7 +58,7 @@ public class mapSupportFragment extends Fragment implements OnMapReadyCallback {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(31.520370, 74.358749)).title("QUICK FIT AUTO SHOP"));
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(31.520370, 74.358749)).title("QUICK FIT AUTO SHOP").snippet("BEST SELLERS!"));
         CameraPosition shop = CameraPosition.builder().target(new LatLng(31.520370, 74.358749)).zoom(16).bearing(0).tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(shop));
     }
