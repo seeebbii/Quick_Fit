@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.quickfit.R;
 
@@ -28,14 +30,17 @@ public class OfferCustomAdapter extends ArrayAdapter<Offers_Model> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         View rowViewer = layoutInflater.inflate(R.layout.offers_row_model, parent, false);
         TextView userName = rowViewer.findViewById(R.id.offer_name);
         TextView brandName = rowViewer.findViewById(R.id.offer_brandsName);
         TextView serviceName = rowViewer.findViewById(R.id.offer_service);
         TextView phoneNumber = rowViewer.findViewById(R.id.offer_phoneNumber);
         TextView offerDetails = rowViewer.findViewById(R.id.offer_details);
+        Button offerDetailsBtn = rowViewer.findViewById(R.id.offer_detailsBtn);
+        Button availOfferBtn = rowViewer.findViewById(R.id.offer_availOffer);
         //ImageView userImage = rowViewer.findViewById(R.id.offer_Image);
 
         userName.setText(offers.get(position).getNameOfUser());
@@ -44,7 +49,26 @@ public class OfferCustomAdapter extends ArrayAdapter<Offers_Model> {
         phoneNumber.setText(offers.get(position).getPhoneNumber());
         offerDetails.setText(offers.get(position).getOfferDetails());
 
+        offerDetailsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Display(position+"");
+            }
+        });
+
+        availOfferBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Display(position+"");
+            }
+        });
+
 
         return rowViewer;
     }
+
+    public void Display(String mssg){
+        Toast.makeText(context,mssg, Toast.LENGTH_SHORT).show();
+    }
+
 }

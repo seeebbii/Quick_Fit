@@ -159,7 +159,7 @@
                 android:layout_marginTop="2dp"
                 android:id="@+id/offer_availOffer"
                 android:layout_marginBottom="15dp"
-                android:text="Details" />
+                android:text="Avail Offer" />
 
 
         </LinearLayout>

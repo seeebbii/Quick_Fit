@@ -20,7 +20,7 @@ public class Promotion_Deals_Fragment extends Fragment {
 
     ListView commentsListView;
     ArrayList<Offers_Model> list;
-    Button offerDetaisBtn, availOfferBtn;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,14 +41,11 @@ public class Promotion_Deals_Fragment extends Fragment {
         list.add(object);
         list.add(object);
         list.add(object);
-        list.add(object);
-        list.add(object);
-        list.add(object);
-        list.add(object);
 
 
         OfferCustomAdapter adapter = new OfferCustomAdapter(getContext(), list);
         commentsListView.setAdapter(adapter);
+
 
     }
 }
