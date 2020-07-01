@@ -57,9 +57,46 @@ public class mapSupportFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(31.520370, 74.358749)).title("QUICK FIT AUTO SHOP").snippet("BEST SELLERS!"));
-        CameraPosition shop = CameraPosition.builder().target(new LatLng(31.520370, 74.358749)).zoom(16).bearing(0).tilt(45).build();
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(shop));
+        LatLng shopLocation = new LatLng(31.520370, 74.358749);
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mGoogleMap.addMarker(new MarkerOptions().position(shopLocation).title("QUICK FIT AUTO SHOP").snippet("BEST SELLERS!"));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(shopLocation, 16), 2000, null);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
 }
