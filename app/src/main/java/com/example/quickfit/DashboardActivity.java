@@ -17,6 +17,7 @@ import com.example.quickfit.Brands.BrandsFragment;
 import com.example.quickfit.Deals.Promotion_Deals_Fragment;
 import com.example.quickfit.Location.mapSupportFragment;
 import com.example.quickfit.ProfileSettings.ProfileFragment;
+import com.example.quickfit.Services.ServiceFragment;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;

@@ -6,25 +6,23 @@
     tools:context=".Brands.BrandsFragment">
 
     <TextView
+        android:id="@+id/allBrands"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/allBrands"
         android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
         android:text="All Brands"
-        android:textSize="25sp"
-        android:layout_margin="15dp"/>
+        android:textSize="25sp" />
 
     <GridView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/gridView"
         android:layout_below="@+id/allBrands"
         android:layout_margin="8dp"
         android:horizontalSpacing="6dp"
-        android:verticalSpacing="6dp"
-        android:numColumns="2"/>
-
-
+        android:numColumns="2"
+        android:verticalSpacing="6dp" />
 
 
 </RelativeLayout>

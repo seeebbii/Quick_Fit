@@ -9,7 +9,7 @@ public class BrandItemsModel {
 
     public BrandItemsModel(int brandImage, String brandName) {
         this.brandImage = brandImage;
-        BrandName = brandName;
+        BrandName = brandName.toLowerCase();
     }
 
     public int getBrandImage() {

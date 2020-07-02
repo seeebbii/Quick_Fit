@@ -10,26 +10,32 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.GridView;
-import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.R;
+import com.example.quickfit.Services.ServiceFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class BrandsFragment extends Fragment {
 
     List<BrandItemsModel> brands;
     GridView gridView;
     BrandsCustomAdapter customAdapter;
+    MenuItem searchItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,7 +62,32 @@ public class BrandsFragment extends Fragment {
 
         customAdapter = new BrandsCustomAdapter(brands, getContext());
         gridView.setAdapter(customAdapter);
+        // Refreshing data
+        customAdapter.notifyDataSetChanged();
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                searchItem.collapseActionView();
+                // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
+                String brandName = BrandsCustomAdapter.brandModelListFiltered.get(position).getBrandName();
+                double latitude = DashboardActivity.LATITUDE;
+                double longitude = DashboardActivity.LONGITUDE;
+                String userName;
+                String phoneNumber;
+
+                // Passing data to Service Fragment
+                Bundle bundle = new Bundle();
+                bundle.putString("BrandName", brandName);
+                bundle.putString("latitude", String.valueOf(latitude));
+                bundle.putString("longitude", String.valueOf(longitude));
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                ServiceFragment serviceFragment = new ServiceFragment();
+                serviceFragment.setArguments(bundle);
+                fragmentTransaction.replace(R.id.fragment_container,serviceFragment).commit();
+            }
+        });
     }
 
     @Override
@@ -68,8 +99,8 @@ public class BrandsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.serachview_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchItem = menu.findItem(R.id.action_search);
+        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setQueryHint("Search...");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -77,6 +108,7 @@ public class BrandsFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 customAdapter.getFilter().filter(newText);

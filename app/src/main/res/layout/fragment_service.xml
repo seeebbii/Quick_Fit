@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Services.ServiceFragment">
+    tools:context=".Brands.BrandsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/allServices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="All Services"
+        android:textSize="25sp" />
+
+    <GridView
+        android:id="@+id/servicesGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_below="@+id/allServices"
+        android:layout_margin="8dp"
+        android:horizontalSpacing="6dp"
+        android:numColumns="2"
+        android:verticalSpacing="6dp" />
 
-</FrameLayout>
+
+</RelativeLayout>
