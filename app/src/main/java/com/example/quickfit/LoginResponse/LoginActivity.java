@@ -149,7 +149,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
             if(result.equals("0 results")){
                 Toast.makeText(context, "Invalid Credentials!", Toast.LENGTH_SHORT).show();
             }else{
