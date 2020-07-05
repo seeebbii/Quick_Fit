@@ -3,6 +3,7 @@ package com.example.quickfit.LoginResponse;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -149,6 +150,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+            if(result.equals("0 results")){
+                Toast.makeText(context, "Invalid Credentials!", Toast.LENGTH_SHORT).show();
+            }else{
+                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+            }
         }
 
         @Override

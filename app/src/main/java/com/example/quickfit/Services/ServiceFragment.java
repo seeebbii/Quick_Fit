@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -76,12 +77,31 @@ public class ServiceFragment extends Fragment{
         gridView = view.findViewById(R.id.servicesGridView);
         services = new ArrayList<ServicesItemModel>();
         mQueue = Volley.newRequestQueue(getContext());
+        new NetworkTask().execute();
+        customAdapter = new ServicesCustomAdapter(services, getContext());
+        gridView.setAdapter(customAdapter);
 
-        mProgressDialog = new ProgressDialog(getContext());
-        mProgressDialog.show();
-        mProgressDialog.setContentView(R.layout.progress_dialog);
-        mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
+                searchItem.collapseActionView();
+                if(getArguments()!= null){
+                    Bundle bundle = getArguments();
+                    brandName = bundle.getString("BrandName");
+                    double latitude = Double.parseDouble(bundle.getString("latitude"));
+                    double longitude = Double.parseDouble(bundle.getString("longitude"));
+                    String userName;
+                    String phoneNumber;
+                    serviceName = ServicesCustomAdapter.serviceModelListFiltered.get(position).getServiceName();
+                    //Toast.makeText(getContext(), "Brand: " + brandName + "\nService: " + serviceName +"\n" + "LatLong: " + latitude + " , " + longitude, Toast.LENGTH_LONG).show();
+                    openDialog();
+                }
+            }
+        });
+    }
 
+    void parseJson(){
         // REQUESTING BRAND OBJECT USING VOLLEY
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             @Override
@@ -115,29 +135,6 @@ public class ServiceFragment extends Fragment{
         });
 
         mQueue.add(jsonArrayRequest);
-        mProgressDialog.dismiss();
-
-        customAdapter = new ServicesCustomAdapter(services, getContext());
-        gridView.setAdapter(customAdapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
-                searchItem.collapseActionView();
-                if(getArguments()!= null){
-                    Bundle bundle = getArguments();
-                    brandName = bundle.getString("BrandName");
-                    double latitude = Double.parseDouble(bundle.getString("latitude"));
-                    double longitude = Double.parseDouble(bundle.getString("longitude"));
-                    String userName;
-                    String phoneNumber;
-                    serviceName = ServicesCustomAdapter.serviceModelListFiltered.get(position).getServiceName();
-                    //Toast.makeText(getContext(), "Brand: " + brandName + "\nService: " + serviceName +"\n" + "LatLong: " + latitude + " , " + longitude, Toast.LENGTH_LONG).show();
-                    openDialog();
-                }
-            }
-        });
     }
 
     public void openDialog() {
@@ -193,5 +190,44 @@ public class ServiceFragment extends Fragment{
             return true;
         }
         return true;
+    }
+
+    class NetworkTask extends AsyncTask<Void, String, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            parseJson();
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        public NetworkTask() {
+            super();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.show();
+            mProgressDialog.setContentView(R.layout.progress_dialog);
+            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            mProgressDialog.dismiss();
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
     }
 }

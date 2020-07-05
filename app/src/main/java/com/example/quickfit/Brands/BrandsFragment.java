@@ -3,6 +3,7 @@ package com.example.quickfit.Brands;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,15 +63,40 @@ public class BrandsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         gridView = view.findViewById(R.id.gridView);
         mQueue = Volley.newRequestQueue(getContext());
-
         brands = new ArrayList<BrandItemsModel>();
 
-        mProgressDialog = new ProgressDialog(getContext());
-        mProgressDialog.show();
-        mProgressDialog.setContentView(R.layout.progress_dialog);
-        mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        new NetworkTask().execute();
+
+        customAdapter = new BrandsCustomAdapter(brands, getContext());
+        gridView.setAdapter(customAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                searchItem.collapseActionView();
+                // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
+                String brandName = BrandsCustomAdapter.brandModelListFiltered.get(position).getBrandName();
+                double latitude = DashboardActivity.LATITUDE;
+                double longitude = DashboardActivity.LONGITUDE;
+                String userName;
+                String phoneNumber;
+
+                // Passing data to Service Fragment
+                Bundle bundle = new Bundle();
+                bundle.putString("BrandName", brandName);
+                bundle.putString("latitude", String.valueOf(latitude));
+                bundle.putString("longitude", String.valueOf(longitude));
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                ServiceFragment serviceFragment = new ServiceFragment();
+                serviceFragment.setArguments(bundle);
+                fragmentTransaction.replace(R.id.fragment_container,serviceFragment).commit();
+            }
+        });
+    }
 
 
+    void parseJson(){
         // REQUESTING BRAND OBJECT USING VOLLEY
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             @Override
@@ -101,36 +127,7 @@ public class BrandsFragment extends Fragment {
                 Toast.makeText(getContext(), error.getMessage() + "", Toast.LENGTH_SHORT).show();
             }
         });
-
         mQueue.add(jsonArrayRequest);
-        mProgressDialog.dismiss();
-
-        customAdapter = new BrandsCustomAdapter(brands, getContext());
-        gridView.setAdapter(customAdapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                searchItem.collapseActionView();
-                // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
-                String brandName = BrandsCustomAdapter.brandModelListFiltered.get(position).getBrandName();
-                double latitude = DashboardActivity.LATITUDE;
-                double longitude = DashboardActivity.LONGITUDE;
-                String userName;
-                String phoneNumber;
-
-                // Passing data to Service Fragment
-                Bundle bundle = new Bundle();
-                bundle.putString("BrandName", brandName);
-                bundle.putString("latitude", String.valueOf(latitude));
-                bundle.putString("longitude", String.valueOf(longitude));
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ServiceFragment serviceFragment = new ServiceFragment();
-                serviceFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.fragment_container,serviceFragment).commit();
-            }
-        });
     }
 
 
@@ -170,4 +167,44 @@ public class BrandsFragment extends Fragment {
         }
         return true;
     }
+
+    class NetworkTask extends AsyncTask<Void, String, String>{
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            parseJson();
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        public NetworkTask() {
+            super();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.show();
+            mProgressDialog.setContentView(R.layout.progress_dialog);
+            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            mProgressDialog.dismiss();
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+    }
+
 }
