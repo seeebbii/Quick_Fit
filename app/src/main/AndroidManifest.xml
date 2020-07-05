@@ -22,7 +22,7 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".DashboardActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RegisterResponse.RegisterActivity" />
         <activity android:name=".LoginResponse.LoginActivity" />
         <activity
             android:name=".MainActivity"

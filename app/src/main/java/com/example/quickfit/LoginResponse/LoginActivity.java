@@ -5,12 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -20,20 +20,22 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.example.quickfit.DashboardActivity;
+import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
-import com.example.quickfit.RegisterActivity;
+import com.example.quickfit.RegisterResponse.RegisterActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -50,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        btRegister = findViewById(R.id.btRegister);
+        btRegister = findViewById(R.id.btnRegister);
         tvLogin = findViewById(R.id.tvLogin);
         btRegister.setOnClickListener(this);
         loginBtn = findViewById(R.id.loginBtn);
@@ -73,12 +75,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     USERNAME.setError("Required!");
                     PASSWORD.setError("Required!");
                 }else{
-                    final String username = USERNAME.getText().toString();
+                    final String email = USERNAME.getText().toString();
                     final String password = PASSWORD.getText().toString();
                     String type = "login";
-                    GetLoginResponse backgroundWorker = new GetLoginResponse(LoginActivity.this);
-                    backgroundWorker.execute(type, username, password);
-                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                    GetLoginResponse getLoginResponse = new GetLoginResponse(LoginActivity.this);
+                    getLoginResponse.execute(type, email,password);
                 }
 
             }
@@ -90,11 +91,69 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v==btRegister){
-            Intent intent   = new Intent(LoginActivity.this, RegisterActivity.class);
-            Pair[] pairs    = new Pair[1];
-            pairs[0] = new Pair<View,String>(tvLogin,"tvLogin");
-            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this,pairs);
-            startActivity(intent,activityOptions.toBundle());
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        }
+    }
+
+    public class GetLoginResponse extends AsyncTask<String,Void,String> {
+        Context context;
+        GetLoginResponse (Context ctx) {
+            context = ctx;
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            String type = params[0];
+            String login_url = "http://sania.co.uk/quick_fix/login.php";
+            if(type.equals("login")) {
+                try {
+                    String user_name = params[1];
+                    String password = params[2];
+                    URL url = new URL(login_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String post_data = URLEncoder.encode("user_email","UTF-8")+"="+URLEncoder.encode(user_name,"UTF-8")+"&"
+                            +URLEncoder.encode("user_password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8");
+                    bufferedWriter.write(post_data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                    String result="";
+                    String line="";
+                    while((line = bufferedReader.readLine())!= null) {
+                        result += line;
+                    }
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
+                    return result;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return "null";
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
         }
     }
 
