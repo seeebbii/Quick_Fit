@@ -1,7 +1,11 @@
 package com.example.quickfit.Services;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,11 +19,21 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.quickfit.Brands.BrandItemsModel;
 import com.example.quickfit.Brands.BrandsCustomAdapter;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +54,9 @@ public class ServiceFragment extends Fragment{
     GridView gridView;
     ServicesCustomAdapter customAdapter;
     MenuItem searchItem;
+    final String URL = "http://sania.co.uk/quick_fix/services_api.php";
+    RequestQueue mQueue;
+    ProgressDialog mProgressDialog;
 
     // SELECTED CHOICES
     public static String brandName;
@@ -58,16 +75,47 @@ public class ServiceFragment extends Fragment{
         super.onViewCreated(view, savedInstanceState);
         gridView = view.findViewById(R.id.servicesGridView);
         services = new ArrayList<ServicesItemModel>();
-        ServicesItemModel object1 = new ServicesItemModel(R.drawable.car_battery, "car battery repair");
-        ServicesItemModel object2 = new ServicesItemModel(R.drawable.car_tire, "car tire repair");
-        services.add(object1);
-        services.add(object1);
-        services.add(object1);
-        services.add(object2);
-        services.add(object2);
-        services.add(object2);
-        services.add(object2);
+        mQueue = Volley.newRequestQueue(getContext());
 
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.show();
+        mProgressDialog.setContentView(R.layout.progress_dialog);
+        mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // REQUESTING BRAND OBJECT USING VOLLEY
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for(int i= 0; i < response.length(); i++){
+                    try {
+                        int id;
+                        String serviceName;
+                        String serviceImage;
+                        JSONObject service = response.getJSONObject(i);
+
+                        serviceName = service.getString("name");
+                        id = service.getInt("id");
+                        serviceImage = service.getString("image_url");
+                        ServicesItemModel object = new ServicesItemModel(serviceImage, serviceName, id);
+
+                        services.add(object);
+                        // Refreshing data
+                        customAdapter.notifyDataSetChanged();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), error.getMessage() + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mQueue.add(jsonArrayRequest);
+        mProgressDialog.dismiss();
 
         customAdapter = new ServicesCustomAdapter(services, getContext());
         gridView.setAdapter(customAdapter);

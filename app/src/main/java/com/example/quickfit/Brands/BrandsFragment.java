@@ -1,7 +1,8 @@
 package com.example.quickfit.Brands;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,14 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.R;
 import com.example.quickfit.Services.ServiceFragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +45,10 @@ public class BrandsFragment extends Fragment {
     GridView gridView;
     BrandsCustomAdapter customAdapter;
     MenuItem searchItem;
+    RequestQueue mQueue;
+    final String URL = "http://sania.co.uk/quick_fix/brands_api.php";
+    ProgressDialog mProgressDialog;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,22 +61,52 @@ public class BrandsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         gridView = view.findViewById(R.id.gridView);
-        brands = new ArrayList<BrandItemsModel>();
-        BrandItemsModel object1 = new BrandItemsModel(R.drawable.bmw, "bmw");
-        BrandItemsModel object2 = new BrandItemsModel(R.drawable.mercedes, "mercedes");
-        brands.add(object1);
-        brands.add(object1);
-        brands.add(object1);
-        brands.add(object2);
-        brands.add(object2);
-        brands.add(object2);
-        brands.add(object2);
+        mQueue = Volley.newRequestQueue(getContext());
 
+        brands = new ArrayList<BrandItemsModel>();
+
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.show();
+        mProgressDialog.setContentView(R.layout.progress_dialog);
+        mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        // REQUESTING BRAND OBJECT USING VOLLEY
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for(int i= 0; i < response.length(); i++){
+                    try {
+                        int id;
+                        String brandName;
+                        String brandImage;
+                        JSONObject brand = response.getJSONObject(i);
+
+                        brandName = brand.getString("name");
+                        id = brand.getInt("id");
+                        brandImage = brand.getString("image_url");
+                        BrandItemsModel object = new BrandItemsModel(brandImage, brandName, id);
+                        brands.add(object);
+                        // Refreshing data
+                        customAdapter.notifyDataSetChanged();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), error.getMessage() + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mQueue.add(jsonArrayRequest);
+        mProgressDialog.dismiss();
 
         customAdapter = new BrandsCustomAdapter(brands, getContext());
         gridView.setAdapter(customAdapter);
-        // Refreshing data
-        customAdapter.notifyDataSetChanged();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,6 +132,8 @@ public class BrandsFragment extends Fragment {
             }
         });
     }
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

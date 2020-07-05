@@ -4,19 +4,25 @@ import android.widget.ImageView;
 
 public class BrandItemsModel {
 
-    private int brandImage;
+    private String brandImage;
     private String BrandName;
+    private int id;
 
-    public BrandItemsModel(int brandImage, String brandName) {
+    public BrandItemsModel(String brandImage, String brandName, int i) {
         this.brandImage = brandImage;
         BrandName = brandName.toLowerCase();
+        this.id = i;
     }
 
-    public int getBrandImage() {
+    public String getBrandImage() {
         return brandImage;
     }
 
     public String getBrandName() {
         return BrandName;
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.quickfit.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,12 @@ public class BrandsCustomAdapter extends BaseAdapter implements Filterable {
         View rootView = inflater.inflate(R.layout.brands_row_model,null);
         ImageView brandImage = rootView.findViewById(R.id.brand_image);
         TextView brandName = rootView.findViewById(R.id.brand_name);
-        brandImage.setImageResource(brandModelListFiltered.get(position).getBrandImage());
+        String url = brandModelListFiltered.get(position).getBrandImage();
+
+        Picasso.get()
+                .load("http://sania.co.uk/quick_fix/brands/"+url)
+                .into(brandImage);
+
         brandName.setText(brandModelListFiltered.get(position).getBrandName());
 
 

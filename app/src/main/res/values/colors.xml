@@ -9,4 +9,5 @@
     <color name="colorBlue">#2FB4FF</color>
     <color name="colorBlueT">#642fb4ff</color>
     <color name="shimmer_background">#dddddd</color>
+    <color name="transparent">#00ff0000</color>
 </resources>

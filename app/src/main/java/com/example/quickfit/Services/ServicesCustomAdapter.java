@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.quickfit.Brands.BrandItemsModel;
 import com.example.quickfit.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,12 @@ public class ServicesCustomAdapter extends BaseAdapter implements Filterable {
         View rootView = inflater.inflate(R.layout.services_row_model,null);
         ImageView serviceImage = rootView.findViewById(R.id.service_image);
         TextView serviceName = rootView.findViewById(R.id.service_name);
-        serviceImage.setImageResource(serviceModelListFiltered.get(position).getServiceImage());
         serviceName.setText(serviceModelListFiltered.get(position).getServiceName());
+        String url = serviceModelListFiltered.get(position).getServiceImage();
+
+        Picasso.get()
+                .load("http://sania.co.uk/quick_fix/services/"+url)
+                .into(serviceImage);
 
         return rootView;
     }
