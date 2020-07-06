@@ -178,12 +178,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
 
                 // SETTING UP USER OBJECT
-                DashboardActivity.CURRENT_USER.setId(Integer.parseInt(data[0]));
-                DashboardActivity.CURRENT_USER.setName(data[1]);
-                DashboardActivity.CURRENT_USER.setEmail(data[2]);
-                DashboardActivity.CURRENT_USER.setPhone(data[3]);
-                DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
-                DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
+//                DashboardActivity.CURRENT_USER.setId(Integer.parseInt(data[0]));
+//                DashboardActivity.CURRENT_USER.setName(data[1]);
+//                DashboardActivity.CURRENT_USER.setEmail(data[2]);
+//                DashboardActivity.CURRENT_USER.setPhone(data[3]);
+//                DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
+//                DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
 
                 mProgressDialog.dismiss();
 
