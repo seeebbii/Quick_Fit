@@ -3,20 +3,26 @@ package com.example.quickfit.Deals;
 import android.widget.ImageView;
 
 public class Offers_Model {
+    private int offerId;
     private String nameOfUser;
     private String brandName;
     private String serviceName;
-    private String phoneNumber;
     private String offerDetails;
-    private ImageView userImage;
+    private String validityTime;
+    private String imageUrl;
 
-    public Offers_Model(String nameOfUser, String brandName, String serviceName, String phoneNumber, String offerDetails, ImageView userImage) {
+    public Offers_Model(int offerId, String nameOfUser, String brandName, String serviceName, String offerDetails, String validityTime, String userImage) {
+        this.offerId = offerId;
         this.nameOfUser = nameOfUser;
         this.brandName = brandName;
         this.serviceName = serviceName;
-        this.phoneNumber = phoneNumber;
         this.offerDetails = offerDetails;
-        this.userImage = userImage;
+        this.validityTime = validityTime;
+        this.imageUrl = userImage;
+    }
+
+    public int getOfferId() {
+        return offerId;
     }
 
     public String getNameOfUser() {
@@ -31,15 +37,15 @@ public class Offers_Model {
         return serviceName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
     public String getOfferDetails() {
         return offerDetails;
     }
 
-    public ImageView getUserImage() {
-        return userImage;
+    public String getValidityTime() {
+        return validityTime;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

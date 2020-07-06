@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.quickfit.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -37,17 +38,23 @@ public class OfferCustomAdapter extends ArrayAdapter<Offers_Model> {
         TextView userName = rowViewer.findViewById(R.id.offer_name);
         TextView brandName = rowViewer.findViewById(R.id.offer_brandsName);
         TextView serviceName = rowViewer.findViewById(R.id.offer_service);
-        TextView phoneNumber = rowViewer.findViewById(R.id.offer_phoneNumber);
+        TextView validityTimer = rowViewer.findViewById(R.id.offer_validityTime);
         TextView offerDetails = rowViewer.findViewById(R.id.offer_details);
         Button offerDetailsBtn = rowViewer.findViewById(R.id.offer_detailsBtn);
         Button availOfferBtn = rowViewer.findViewById(R.id.offer_availOffer);
-        //ImageView userImage = rowViewer.findViewById(R.id.offer_Image);
+        ImageView userImage = rowViewer.findViewById(R.id.offer_Image);
 
+        String url =  offers.get(position).getImageUrl();;
+        url = url.replace(" ", "%20");
         userName.setText(offers.get(position).getNameOfUser());
         brandName.setText(offers.get(position).getBrandName());
         serviceName.setText(offers.get(position).getServiceName());
-        phoneNumber.setText(offers.get(position).getPhoneNumber());
+        validityTimer.setText(offers.get(position).getValidityTime());
         offerDetails.setText(offers.get(position).getOfferDetails());
+
+        Picasso.get()
+                .load("http://sania.co.uk/quick_fix/"+url)
+                .into(userImage);
 
         offerDetailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override

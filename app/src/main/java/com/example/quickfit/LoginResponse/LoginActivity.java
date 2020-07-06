@@ -152,7 +152,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if(result.equals("0 results")){
                 Toast.makeText(context, "Invalid Credentials!", Toast.LENGTH_SHORT).show();
             }else{
-                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                // LOGIC FOR EXTRACTING USER DATA FROM LOGIN RESPONSE AND SETTING IT TO LOGGED IN USER OBJECT
+                String substring = "";
+                String [] data = new String[6];
+                int count = 0;
+                int counter = 0;
+                for (int i = 0; i < result.length(); i++){
+                    if(count > 0 && result.charAt(i) != ','){
+                        substring = substring + result.charAt(i);
+                    }
+                    if(result.charAt(i) == ',' || i == result.length() - 1){
+                        data[counter] = substring;
+                        counter++;
+                        count = 0;
+                        substring = "";
+                    }
+                    else if(result.charAt(i) == ':') {
+                        count++;
+                    }
+                }
+
+                // SETTING UP USER OBJECT
+                DashboardActivity.CURRENT_USER.setId(Integer.parseInt(data[0]));
+                DashboardActivity.CURRENT_USER.setName(data[1]);
+                DashboardActivity.CURRENT_USER.setEmail(data[2]);
+                DashboardActivity.CURRENT_USER.setPhone(data[3]);
+                DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
+                DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
+
+                Intent dashBoard = new Intent(LoginActivity.this, DashboardActivity.class);
+                startActivity(dashBoard);
             }
         }
 

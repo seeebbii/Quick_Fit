@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.example.quickfit.Brands.BrandsFragment;
 import com.example.quickfit.Deals.Promotion_Deals_Fragment;
 import com.example.quickfit.Location.mapSupportFragment;
 import com.example.quickfit.ProfileSettings.ProfileFragment;
+import com.example.quickfit.ProfileSettings.ProfileModel;
 import com.example.quickfit.Services.ServiceFragment;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -30,6 +32,7 @@ public class DashboardActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     public static double LATITUDE = 0;
     public static double LONGITUDE = 0;
+    public static final ProfileModel CURRENT_USER = new ProfileModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigationBar);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BrandsFragment()).commit();
+
 
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(DashboardActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);

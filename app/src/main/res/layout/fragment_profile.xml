@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileSettings.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:id="@+id/userImage"/>
+    
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userImage"
+        android:id="@+id/userId"
+        android:textSize="25sp"
+        android:text="id"
+        android:layout_centerHorizontal="true"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userId"
+        android:layout_centerHorizontal="true"
+        android:text="Name"
+        android:textSize="25sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userName"
+        android:id="@+id/userEmail"
+        android:textSize="25sp"
+        android:text="Email"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userEmail"
+        android:id="@+id/userStatusCode"
+        android:textSize="25sp"
+        android:text="Status code"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userStatusCode"
+        android:id="@+id/userPhone"
+        android:textSize="25sp"
+        android:text="Phone"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
