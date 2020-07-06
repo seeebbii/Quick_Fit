@@ -8,6 +8,8 @@ import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -60,10 +62,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         USERNAME = findViewById(R.id.username);
         PASSWORD = findViewById(R.id.password);
 
-//        mProgressDialog = new ProgressDialog(this);
-//        //mProgressDialog.show();
-//        mProgressDialog.setContentView(R.layout.progress_dialog);
-//        mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mProgressDialog = new ProgressDialog(this);
+        //mProgressDialog.show();
+        mProgressDialog.setContentView(R.layout.progress_dialog);
+        mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
 
@@ -144,7 +146,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected void onPreExecute() {
-
+            mProgressDialog = new ProgressDialog(LoginActivity.this);
+            mProgressDialog.show();
+            mProgressDialog.setContentView(R.layout.progress_dialog);
+            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
         @Override
@@ -179,6 +184,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 DashboardActivity.CURRENT_USER.setPhone(data[3]);
                 DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
                 DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
+
+                mProgressDialog.dismiss();
 
                 Intent dashBoard = new Intent(LoginActivity.this, DashboardActivity.class);
                 startActivity(dashBoard);

@@ -1,5 +1,6 @@
 package com.example.quickfit.ProfileSettings;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,10 +10,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.quickfit.DashboardActivity;
+import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
 import com.squareup.picasso.Picasso;
 
@@ -20,6 +23,7 @@ public class ProfileFragment extends Fragment {
 
     ImageView userImage;
     TextView id, name, email, statusCode, phone;
+    Button btnLogOut;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +35,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         userImage = view.findViewById(R.id.userImage);
+        btnLogOut = view.findViewById(R.id.btnLogOut);
 
         String url = DashboardActivity.CURRENT_USER.getUserImageUrl();
         url = url.replace(" ", "%20");
@@ -50,6 +55,13 @@ public class ProfileFragment extends Fragment {
         email.setText(DashboardActivity.CURRENT_USER.getEmail());
         statusCode.setText(DashboardActivity.CURRENT_USER.getStatusCode());
         phone.setText(DashboardActivity.CURRENT_USER.getPhone());
+
+        btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                startActivity(new Intent(getContext(), MainActivity.class));
+            }
+        });
 
 
     }
