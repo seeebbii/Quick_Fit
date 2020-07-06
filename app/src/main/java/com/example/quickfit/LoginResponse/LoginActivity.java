@@ -78,8 +78,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     USERNAME.setError("Required!");
                     PASSWORD.setError("Required!");
                 }else{
-                    final String email = USERNAME.getText().toString();
-                    final String password = PASSWORD.getText().toString();
+                    final String email = USERNAME.getText().toString().trim();
+                    final String password = PASSWORD.getText().toString().trim();
                     String type = "login";
                     GetLoginResponse getLoginResponse = new GetLoginResponse(LoginActivity.this);
                     getLoginResponse.execute(type, email,password);
@@ -177,13 +177,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
 
-                // SETTING UP USER OBJECT
-//                DashboardActivity.CURRENT_USER.setId(Integer.parseInt(data[0]));
-//                DashboardActivity.CURRENT_USER.setName(data[1]);
-//                DashboardActivity.CURRENT_USER.setEmail(data[2]);
-//                DashboardActivity.CURRENT_USER.setPhone(data[3]);
-//                DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
-//                DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
+                 // SETTING UP USER OBJECT
+                DashboardActivity.CURRENT_USER.setId(Integer.parseInt(data[0]));
+                DashboardActivity.CURRENT_USER.setName(data[1]);
+                DashboardActivity.CURRENT_USER.setEmail(data[2]);
+                DashboardActivity.CURRENT_USER.setPhone(data[3]);
+                DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
+                DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
 
                 mProgressDialog.dismiss();
 
