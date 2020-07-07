@@ -8,6 +8,8 @@ public class ProfileModel {
     private String phone;
     private String statusCode;
     private String userImageUrl;
+    public double LATITUDE = 0;
+    public double LONGITUDE = 0;
 
     public ProfileModel(){
         // DEFAULT CONSTRUCTOR
@@ -68,5 +70,21 @@ public class ProfileModel {
 
     public void setUserImageUrl(String userImageUrl) {
         this.userImageUrl = userImageUrl;
+    }
+
+    public double getLATITUDE() {
+        return LATITUDE;
+    }
+
+    public void setLATITUDE(double LATITUDE) {
+        this.LATITUDE = LATITUDE;
+    }
+
+    public double getLONGITUDE() {
+        return LONGITUDE;
+    }
+
+    public void setLONGITUDE(double LONGITUDE) {
+        this.LONGITUDE = LONGITUDE;
     }
 }

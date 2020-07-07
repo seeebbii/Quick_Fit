@@ -6,10 +6,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.quickfit.Brands.BrandItemsModel;
+import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,12 +37,22 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class mapSupportFragment extends Fragment implements OnMapReadyCallback {
 
     GoogleMap mGoogleMap;
     MapView mapView;
     View mView;
+    String URL = "http://sania.co.uk/quick_fix/adminLocation.php?email=" + DashboardActivity.CURRENT_USER.getEmail();
+    LatLng QuickFitAutos;
+    String address;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +73,7 @@ public class mapSupportFragment extends Fragment implements OnMapReadyCallback {
 
         mapView = (MapView) mView.findViewById(R.id.map);
         if(mapView != null){
+            getAdminLocation();
             mapView.onCreate(null);
             mapView.onResume();
             mapView.getMapAsync(this);
@@ -53,14 +81,73 @@ public class mapSupportFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    public void getAdminLocation() {
+
+        StringRequest postRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        Log.d("response", response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+
+                            QuickFitAutos = new LatLng(jsonObject.getDouble("latitude"), jsonObject.getDouble("longitude"));
+                            address = jsonObject.getString("address");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        if (error instanceof NetworkError) {
+                            Toast.makeText(getContext(), getString(R.string.Network_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ServerError) {
+                            Toast.makeText(getContext(), getString(R.string.Server_error_ksa), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof AuthFailureError) {
+                            Toast.makeText(getContext(), getString(R.string.Auth_Failure_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ParseError) {
+                            Toast.makeText(getContext(), getString(R.string.Parse_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof NoConnectionError) {
+                            Toast.makeText(getContext(), getString(R.string.Connection_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(getContext(), getString(R.string.Timeout_error), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.Something_went_wrong_ksa), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+
+        postRequest.setRetryPolicy(new DefaultRetryPolicy(
+                8000,
+                2,
+                2));
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(postRequest);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
-        LatLng shopLocation = new LatLng(31.520370, 74.358749);
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mGoogleMap.addMarker(new MarkerOptions().position(shopLocation).title("QUICK FIT AUTO SHOP").snippet("BEST SELLERS!"));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(shopLocation, 16), 2000, null);
+        mGoogleMap.addMarker(new MarkerOptions().position(QuickFitAutos).title(address));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(QuickFitAutos, 16), 2000, null);
     }
 
     @Override

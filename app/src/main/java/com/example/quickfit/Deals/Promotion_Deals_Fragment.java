@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +18,24 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.quickfit.Brands.BrandItemsModel;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.R;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,13 +53,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Promotion_Deals_Fragment extends Fragment {
 
     ListView commentsListView;
     ArrayList<Offers_Model> list;
     ProgressDialog mProgressDialog;
-    RequestQueue mQueue;
     OfferCustomAdapter adapter;
     final String URL = "http://sania.co.uk/quick_fix/getOffers.php";
 
@@ -65,89 +76,110 @@ public class Promotion_Deals_Fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         commentsListView = view.findViewById(R.id.commentsListView);
-        mQueue = Volley.newRequestQueue(getContext());
+
         list = new ArrayList<Offers_Model>();
-        String method = "status_code";
-        new NetworkTask().execute(method, DashboardActivity.CURRENT_USER.getStatusCode());
+
 
         adapter = new OfferCustomAdapter(getContext(), list);
         commentsListView.setAdapter(adapter);
     }
 
-    void parseJson(String JSON_STRING){
-        int id;
-        String nameOfUser;
-        String brandName;
-        String serviceName;
-        String imageUrl;
-        String offerDetails;
-        String validityTime;
-        try {
-            JSONArray jsonArray = new JSONArray(JSON_STRING);
-            for(int i = 0; i < jsonArray.length(); i++){
-                JSONObject offer = jsonArray.getJSONObject(i);
-                nameOfUser = offer.getString("name");
-                id = offer.getInt("id");
-                imageUrl = offer.getString("image_url");
-                validityTime = offer.getString("validity_time");
-                brandName = offer.getString("offer_brand");
-                serviceName = offer.getString("offer_service");
-                offerDetails = offer.getString("details");
-
-                Offers_Model offers_model = new Offers_Model(id,nameOfUser, brandName, serviceName, offerDetails, validityTime, imageUrl);
-                list.add(offers_model);
-
-                // Refreshing data
-                adapter.notifyDataSetChanged();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        new NetworkTask().execute();
     }
 
-    class NetworkTask extends AsyncTask<String, Void, String> {
+    public void getBrands() {
+        String url = "https://sania.co.uk/quick_fix/getOffers.php?status_code=" + DashboardActivity.CURRENT_USER.getStatusCode();
+        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        int id;
+                        String nameOfUser;
+                        String brandName;
+                        String serviceName;
+                        String imageUrl;
+                        String offerDetails;
+                        String validityTime;
+                        Log.d("response", response);
+                        try {
+                            list.clear();
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject offer = jsonArray.getJSONObject(i);
+                                nameOfUser = offer.getString("name");
+                                id = offer.getInt("id");
+                                imageUrl = offer.getString("image_url");
+                                validityTime = offer.getString("validity_time");
+                                brandName = offer.getString("offer_brand");
+                                serviceName = offer.getString("offer_service");
+                                offerDetails = offer.getString("details");
 
+                                Offers_Model offers_model = new Offers_Model(id, nameOfUser, brandName, serviceName, offerDetails, validityTime, imageUrl);
+                                list.add(offers_model);
+                                adapter.notifyDataSetChanged();
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error instanceof NetworkError) {
+                            Toast.makeText(getContext(), getString(R.string.Network_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ServerError) {
+                            Toast.makeText(getContext(), getString(R.string.Server_error_ksa), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof AuthFailureError) {
+                            Toast.makeText(getContext(), getString(R.string.Auth_Failure_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ParseError) {
+                            Toast.makeText(getContext(), getString(R.string.Parse_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof NoConnectionError) {
+                            Toast.makeText(getContext(), getString(R.string.Connection_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(getContext(), getString(R.string.Timeout_error), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.Something_went_wrong_ksa), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(postRequest);
+    }
+
+    class NetworkTask extends AsyncTask<Void, String, String>{
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+
+            try {
+                Thread.sleep(1400);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
 
         public NetworkTask() {
             super();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String method = params[0];
-            if(method.equals("status_code")){
-                String  status_code = params[1];
-                try {
-                    java.net.URL url = new URL(URL);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setDoOutput(true);
-                    OutputStream os = httpURLConnection.getOutputStream();
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    String data = URLEncoder.encode("status_code", "UTF-8")+"=" + URLEncoder.encode(status_code, "UTF-8");
-                    bufferedWriter.write(data);
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
-                    os.close();
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"));
-                    String result="";
-                    String line="";
-                    while((line = bufferedReader.readLine())!= null) {
-                        result += line;
-                    }
-                    bufferedReader.close();
-                    is.close();
-                    httpURLConnection.disconnect();
-                    return result;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            return "ERROR!";
         }
 
         @Override
@@ -156,23 +188,17 @@ public class Promotion_Deals_Fragment extends Fragment {
             mProgressDialog.show();
             mProgressDialog.setContentView(R.layout.progress_dialog);
             mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+            getBrands();
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String s) {
             mProgressDialog.dismiss();
-            if(result.isEmpty()){
-                Toast.makeText(getContext(), "OOPS, Something went wrong!", Toast.LENGTH_SHORT).show();
-            }else{
-                parseJson(result);
-            }
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
+        protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
         }
     }
-
 }

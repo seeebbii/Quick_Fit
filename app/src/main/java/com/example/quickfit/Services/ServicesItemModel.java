@@ -9,7 +9,7 @@ public class ServicesItemModel {
     public ServicesItemModel(String serviceImage, String serviceName, int i) {
         this.serviceImage = serviceImage;
         this.serviceName = serviceName.toLowerCase();
-        int id = 0;
+        int id = i;
     }
 
     public String getServiceImage() {
@@ -18,5 +18,9 @@ public class ServicesItemModel {
 
     public String getServiceName() {
         return serviceName;
+    }
+
+    public int getId() {
+        return id;
     }
 }

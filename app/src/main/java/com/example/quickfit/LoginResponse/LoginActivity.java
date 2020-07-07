@@ -156,6 +156,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected void onPostExecute(String result) {
             if(result.equals("0 results")){
                 Toast.makeText(context, "Invalid Credentials!", Toast.LENGTH_SHORT).show();
+                mProgressDialog.dismiss();
             }else{
                 // LOGIC FOR EXTRACTING USER DATA FROM LOGIN RESPONSE AND SETTING IT TO LOGGED IN USER OBJECT
                 String substring = "";
@@ -189,6 +190,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 Intent dashBoard = new Intent(LoginActivity.this, DashboardActivity.class);
                 startActivity(dashBoard);
+                finish();
             }
         }
 

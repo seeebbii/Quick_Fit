@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,8 +60,10 @@ public class ServiceFragment extends Fragment{
     RequestQueue mQueue;
     ProgressDialog mProgressDialog;
 
-    // SELECTED CHOICES
+    // SELECTED APPOINTMENT DATA
+    public static String brandId;
     public static String brandName;
+    public static String serviceId;
     public static String serviceName;
 
 
@@ -77,7 +80,7 @@ public class ServiceFragment extends Fragment{
         gridView = view.findViewById(R.id.servicesGridView);
         services = new ArrayList<ServicesItemModel>();
         mQueue = Volley.newRequestQueue(getContext());
-        new NetworkTask().execute();
+
         customAdapter = new ServicesCustomAdapter(services, getContext());
         gridView.setAdapter(customAdapter);
 
@@ -88,17 +91,20 @@ public class ServiceFragment extends Fragment{
                 searchItem.collapseActionView();
                 if(getArguments()!= null){
                     Bundle bundle = getArguments();
-                    brandName = bundle.getString("BrandName");
-                    double latitude = Double.parseDouble(bundle.getString("latitude"));
-                    double longitude = Double.parseDouble(bundle.getString("longitude"));
-                    String userName;
-                    String phoneNumber;
+                    brandId = bundle.getString("brandId");
+                    brandName = bundle.getString("selected_brand_name");
+                    serviceId = ServicesCustomAdapter.serviceModelListFiltered.get(position).getId()+"";
                     serviceName = ServicesCustomAdapter.serviceModelListFiltered.get(position).getServiceName();
-                    //Toast.makeText(getContext(), "Brand: " + brandName + "\nService: " + serviceName +"\n" + "LatLong: " + latitude + " , " + longitude, Toast.LENGTH_LONG).show();
                     openDialog();
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new NetworkTask().execute();
     }
 
     void parseJson(){
@@ -150,7 +156,17 @@ public class ServiceFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 // UPLOAD DATA TO SERVER
-                Toast.makeText(getContext(), "Appointment Fixed", Toast.LENGTH_SHORT).show();
+                SetUserRequest userRequest = new SetUserRequest(getContext());
+
+                String method = "setRequest";
+                String userId = DashboardActivity.CURRENT_USER.getId()+"";
+                String userName = DashboardActivity.CURRENT_USER.getName();
+                String userEmail = DashboardActivity.CURRENT_USER.getEmail();
+                String userPhone = DashboardActivity.CURRENT_USER.getPhone();
+                String userLat = DashboardActivity.CURRENT_USER.getLATITUDE()+"";
+                String userLong = DashboardActivity.CURRENT_USER.getLONGITUDE()+"";
+
+                userRequest.execute(method,userId,userName,userEmail, userPhone, brandId, brandName, serviceId, serviceName, userLat, userLong);
                 dialog.dismiss();
             }
         });
@@ -177,8 +193,12 @@ public class ServiceFragment extends Fragment{
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                customAdapter.getFilter().filter(newText);
-                return true;
+                if(services.isEmpty()){
+                    return false;
+                }else{
+                    customAdapter.getFilter().filter(newText);
+                    return true;
+                }
             }
         });
         super.onCreateOptionsMenu(menu, inflater);

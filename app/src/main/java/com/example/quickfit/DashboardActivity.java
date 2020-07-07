@@ -30,8 +30,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     // User Location
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
-    public static double LATITUDE = 0;
-    public static double LONGITUDE = 0;
     public static final ProfileModel CURRENT_USER = new ProfileModel();
 
     @Override
@@ -79,19 +77,17 @@ public class DashboardActivity extends AppCompatActivity {
             return;
         }
         LocationServices.getFusedLocationProviderClient(DashboardActivity.this).requestLocationUpdates(locationRequest, new LocationCallback() {
-
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 LocationServices.getFusedLocationProviderClient(DashboardActivity.this).removeLocationUpdates(this);
                 if (locationResult != null && locationResult.getLocations().size() > 0) {
                     int latestLocationIndex = locationResult.getLocations().size() - 1;
-                    LATITUDE = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                    LONGITUDE = locationResult.getLocations().get(latestLocationIndex).getLongitude();
-
-                    Toast.makeText(DashboardActivity.this, LATITUDE + " " + LONGITUDE +"", Toast.LENGTH_SHORT).show();
-
+                    CURRENT_USER.setLATITUDE(locationResult.getLocations().get(latestLocationIndex).getLatitude());
+                    CURRENT_USER.setLONGITUDE(locationResult.getLocations().get(latestLocationIndex).getLongitude());
                 }
+
+
             }
         }, Looper.getMainLooper());
     }

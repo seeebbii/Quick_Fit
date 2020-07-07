@@ -3,4 +3,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_google_maps">Map</string>
+    <string name="Timeout_error">Oops. Timeout error</string>
+    <string name="Connection_error">Oops.  Connection error!</string>
+    <string name="Parse_error">Oops.  Parse error!</string>
+    <string name="Auth_Failure_error">Oops.  Auth Failure error</string>
+    <string name="Server_error_ksa">Something went wrong, try again later</string>
+    <string name="Something_went_wrong_ksa">Something went wrong, try again later</string>
+    <string name="Network_error">Oops. Network error!</string>
 </resources>

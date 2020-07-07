@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +17,19 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.R;
@@ -31,7 +40,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,8 +76,6 @@ public class BrandsFragment extends Fragment {
         mQueue = Volley.newRequestQueue(getContext());
         brands = new ArrayList<BrandItemsModel>();
 
-        new NetworkTask().execute();
-
         customAdapter = new BrandsCustomAdapter(brands, getContext());
         gridView.setAdapter(customAdapter);
 
@@ -76,16 +85,12 @@ public class BrandsFragment extends Fragment {
                 searchItem.collapseActionView();
                 // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
                 String brandName = BrandsCustomAdapter.brandModelListFiltered.get(position).getBrandName();
-                double latitude = DashboardActivity.LATITUDE;
-                double longitude = DashboardActivity.LONGITUDE;
-                String userName;
-                String phoneNumber;
+                int brandId = BrandsCustomAdapter.brandModelListFiltered.get(position).getId();
 
                 // Passing data to Service Fragment
                 Bundle bundle = new Bundle();
-                bundle.putString("BrandName", brandName);
-                bundle.putString("latitude", String.valueOf(latitude));
-                bundle.putString("longitude", String.valueOf(longitude));
+                bundle.putString("brandId", brandId+"");
+                bundle.putString("selected_brand_name", brandName+"");
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 ServiceFragment serviceFragment = new ServiceFragment();
@@ -95,41 +100,85 @@ public class BrandsFragment extends Fragment {
         });
     }
 
+    public void parseJson() {
 
-    void parseJson(){
-        // REQUESTING BRAND OBJECT USING VOLLEY
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                for(int i= 0; i < response.length(); i++){
-                    try {
-                        int id;
-                        String brandName;
-                        String brandImage;
-                        JSONObject brand = response.getJSONObject(i);
+        StringRequest postRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-                        brandName = brand.getString("name");
-                        id = brand.getInt("id");
-                        brandImage = brand.getString("image_url");
-                        BrandItemsModel object = new BrandItemsModel(brandImage, brandName, id);
-                        brands.add(object);
-                        // Refreshing data
-                        customAdapter.notifyDataSetChanged();
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                int id;
+                                String brandName;
+                                String brandImage;
+                                JSONObject brand = jsonArray.getJSONObject(i);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                                brandName = brand.getString("name");
+                                String substring="";
+                                for(int j=0; j < brandName.length(); j++){
+                                    if(brandName.charAt(j) != '.'){
+                                        substring += brandName.charAt(j);
+                                    }else if(brandName.charAt(j) == '.'){
+                                        break;
+                                    }
+                                }
+
+                                id = brand.getInt("id");
+                                brandImage = brand.getString("image_url");
+                                BrandItemsModel object = new BrandItemsModel(brandImage, substring, id);
+                                brands.add(object);
+
+
+                            }
+                            // Refreshing data
+                            customAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        if (error instanceof NetworkError) {
+                            Toast.makeText(getContext(), getString(R.string.Network_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ServerError) {
+                            Toast.makeText(getContext(), getString(R.string.Server_error_ksa), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof AuthFailureError) {
+                            Toast.makeText(getContext(), getString(R.string.Auth_Failure_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ParseError) {
+                            Toast.makeText(getContext(), getString(R.string.Parse_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof NoConnectionError) {
+                            Toast.makeText(getContext(), getString(R.string.Connection_error), Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(getContext(), getString(R.string.Timeout_error), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.Something_went_wrong_ksa), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
-        }, new Response.ErrorListener() {
+        ) {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.getMessage() + "", Toast.LENGTH_SHORT).show();
-            }
-        });
-        mQueue.add(jsonArrayRequest);
-    }
+            protected Map<String, String> getParams() {
 
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+
+        postRequest.setRetryPolicy(new DefaultRetryPolicy(
+                8000,
+                2,
+                2));
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(postRequest);
+    }
 
 
     @Override
@@ -158,6 +207,12 @@ public class BrandsFragment extends Fragment {
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new NetworkTask().execute();
     }
 
     @Override
