@@ -27,6 +27,7 @@ import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
 import com.example.quickfit.RegisterResponse.RegisterActivity;
+import com.example.quickfit.SharedPref;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -178,13 +179,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
 
-                 // SETTING UP USER OBJECT
-                DashboardActivity.CURRENT_USER.setId(Integer.parseInt(data[0]));
-                DashboardActivity.CURRENT_USER.setName(data[1]);
-                DashboardActivity.CURRENT_USER.setEmail(data[2]);
-                DashboardActivity.CURRENT_USER.setPhone(data[3]);
-                DashboardActivity.CURRENT_USER.setStatusCode(data[4]);
-                DashboardActivity.CURRENT_USER.setUserImageUrl(data[5]);
+                // SAVING DATA IN SHARED PREFERENCES
+                SharedPref.savePreferencesBoolean("isLoggedIn",true, LoginActivity.this);
+                SharedPref.savePreferencesInt("user_id",Integer.parseInt(data[0]), LoginActivity.this);
+                SharedPref.savePreferences("user_name",data[1], LoginActivity.this);
+                SharedPref.savePreferences("user_email",data[2], LoginActivity.this);
+                SharedPref.savePreferences("user_phone",data[3], LoginActivity.this);
+                SharedPref.savePreferences("user_statusCode",data[4], LoginActivity.this);
+                SharedPref.savePreferences("user_image",data[5], LoginActivity.this);
 
                 mProgressDialog.dismiss();
 

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
+import com.example.quickfit.SharedPref;
 import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
@@ -59,7 +60,9 @@ public class ProfileFragment extends Fragment {
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(getContext(), MainActivity.class));
+                SharedPref.savePreferencesBoolean("isLoggedIn", false, getContext());
+                startActivity(new Intent(getContext(), MainActivity.class));
+                getActivity().finish();
             }
         });
 

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.quickfit.Brands.BrandsFragment;
 import com.example.quickfit.Deals.Promotion_Deals_Fragment;
 import com.example.quickfit.Location.mapSupportFragment;
+import com.example.quickfit.LoginResponse.LoginActivity;
 import com.example.quickfit.ProfileSettings.ProfileFragment;
 import com.example.quickfit.ProfileSettings.ProfileModel;
 import com.example.quickfit.Services.ServiceFragment;
@@ -31,11 +32,36 @@ public class DashboardActivity extends AppCompatActivity {
     // User Location
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     public static final ProfileModel CURRENT_USER = new ProfileModel();
+    private long backPressedTime;
+    private Toast backToast;
+
+    @Override
+    public void onBackPressed() {
+
+        if(backPressedTime + 2000 > System.currentTimeMillis()){
+            backToast.cancel();
+            super.onBackPressed();
+            return;
+        }else{
+            backToast = Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+        backPressedTime = System.currentTimeMillis();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        // SETTING UP USER OBJECT
+        CURRENT_USER.setId(SharedPref.getPreferencesInt("user_id", DashboardActivity.this));
+        CURRENT_USER.setName(SharedPref.getPreferences("user_name", DashboardActivity.this));
+        CURRENT_USER.setEmail(SharedPref.getPreferences("user_email", DashboardActivity.this));
+        CURRENT_USER.setPhone(SharedPref.getPreferences("user_phone", DashboardActivity.this));
+        CURRENT_USER.setStatusCode(SharedPref.getPreferences("user_statusCode", DashboardActivity.this));
+        CURRENT_USER.setUserImageUrl(SharedPref.getPreferences("user_image", DashboardActivity.this));
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigationBar);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BrandsFragment()).commit();
@@ -59,6 +85,11 @@ public class DashboardActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permission Declined!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void getCurrentLocation() {

@@ -81,7 +81,7 @@ public class BrandsCustomAdapter extends BaseAdapter implements Filterable {
                     filterResults.count = brandModelList.size();
                     filterResults.values = brandModelList;
                 }else{
-                    String searchStr = charSequence.toString().toLowerCase();
+                    String searchStr = charSequence.toString();
                     List<BrandItemsModel> resultData = new ArrayList<BrandItemsModel>();
                     for(BrandItemsModel brandsModel: brandModelList){
                         if(brandsModel.getBrandName().contains(searchStr)){

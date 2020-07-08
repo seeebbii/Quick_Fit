@@ -124,13 +124,13 @@ public class BrandsFragment extends Fragment {
                                         break;
                                     }
                                 }
+                                String CapBrandName = substring.substring(0,1).toUpperCase() + substring.substring(1);
+                                Log.i("cap", CapBrandName);
 
                                 id = brand.getInt("id");
                                 brandImage = brand.getString("image_url");
-                                BrandItemsModel object = new BrandItemsModel(brandImage, substring, id);
+                                BrandItemsModel object = new BrandItemsModel(brandImage, CapBrandName, id);
                                 brands.add(object);
-
-
                             }
                             // Refreshing data
                             customAdapter.notifyDataSetChanged();
@@ -202,7 +202,7 @@ public class BrandsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                customAdapter.getFilter().filter(newText);
+                customAdapter.getFilter().filter(newText.toUpperCase());
                 return true;
             }
         });

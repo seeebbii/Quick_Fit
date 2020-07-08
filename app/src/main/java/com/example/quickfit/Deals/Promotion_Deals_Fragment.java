@@ -103,7 +103,6 @@ public class Promotion_Deals_Fragment extends Fragment {
                         String imageUrl;
                         String offerDetails;
                         String validityTime;
-                        Log.d("response", response);
                         try {
                             list.clear();
                             JSONArray jsonArray = new JSONArray(response);
