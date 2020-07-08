@@ -131,8 +131,14 @@ public class DashboardActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.nav_home:
                     // Collapsing action view on tapping home fragment
-                    BrandsFragment.searchItem.collapseActionView();
-                    ServiceFragment.searchItem.collapseActionView();
+                    if(BrandsFragment.searchItem != null){
+                        BrandsFragment.searchItem.collapseActionView();
+
+                    }
+                    if(ServiceFragment.searchItem != null){
+                        ServiceFragment.searchItem.collapseActionView();
+                    }
+
                     selectedFragment = new BrandsFragment();
                     break;
                 case R.id.nav_profile:

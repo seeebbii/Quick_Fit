@@ -1,9 +1,13 @@
 package com.example.quickfit.Services;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.quickfit.R;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.BufferedReader;
@@ -28,6 +32,7 @@ public class SetUserRequest extends AsyncTask< String, Void, String> {
         this.context = ctx;
     }
 
+    Dialog mDialog;
     @Override
     protected String doInBackground(String... params) {
         String REG_URL = "http://sania.co.uk/quick_fix/sendPushNotification.php";
@@ -90,11 +95,27 @@ public class SetUserRequest extends AsyncTask< String, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        mDialog = new Dialog(context);
+        mDialog.setContentView(R.layout.dialog_appointmentfixed);
+
     }
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+        if(result.equals("Yahoo!!! Message sent successfully")){
+            Toast.makeText(context, "Appointment Fixed!", Toast.LENGTH_SHORT).show();
+            mDialog.show();
+            Button dialogBtn = mDialog.findViewById(R.id.dialogBtn);
+            dialogBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDialog.dismiss();
+                }
+            });
+        }else{
+            Toast.makeText(context, "Something went wrong...!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
