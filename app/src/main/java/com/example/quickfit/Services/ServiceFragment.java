@@ -55,7 +55,7 @@ public class ServiceFragment extends Fragment{
     List<ServicesItemModel> services;
     GridView gridView;
     ServicesCustomAdapter customAdapter;
-    MenuItem searchItem;
+    public static MenuItem searchItem;
     final String URL = "http://sania.co.uk/quick_fix/services_api.php";
     RequestQueue mQueue;
     ProgressDialog mProgressDialog;

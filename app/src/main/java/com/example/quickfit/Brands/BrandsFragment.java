@@ -56,7 +56,7 @@ public class BrandsFragment extends Fragment {
     List<BrandItemsModel> brands;
     GridView gridView;
     BrandsCustomAdapter customAdapter;
-    MenuItem searchItem;
+    public static MenuItem searchItem;
     RequestQueue mQueue;
     final String URL = "http://sania.co.uk/quick_fix/brands_api.php";
     ProgressDialog mProgressDialog;
