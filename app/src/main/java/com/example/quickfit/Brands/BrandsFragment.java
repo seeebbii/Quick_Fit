@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -99,6 +100,13 @@ public class BrandsFragment extends Fragment {
             }
         });
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // scroll speed decreases as friction increases. a value of 2 worked
+        // well in an emulator; you need to test it on a real device
+        gridView.setFriction(ViewConfiguration.getScrollFriction() * 10);
+    }
 
     public void parseJson() {
 
@@ -124,12 +132,9 @@ public class BrandsFragment extends Fragment {
                                         break;
                                     }
                                 }
-                                String CapBrandName = substring.substring(0,1).toUpperCase() + substring.substring(1);
-                                Log.i("cap", CapBrandName);
-
                                 id = brand.getInt("id");
                                 brandImage = brand.getString("image_url");
-                                BrandItemsModel object = new BrandItemsModel(brandImage, CapBrandName, id);
+                                BrandItemsModel object = new BrandItemsModel(brandImage, substring, id);
                                 brands.add(object);
                             }
                             // Refreshing data
