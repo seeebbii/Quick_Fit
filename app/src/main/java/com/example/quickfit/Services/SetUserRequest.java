@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.quickfit.R;
+import com.example.quickfit.SharedPref;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.BufferedReader;
@@ -103,7 +104,6 @@ public class SetUserRequest extends AsyncTask< String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         if(result.equals("Yahoo!!! Message sent successfully")){
-            Toast.makeText(context, "Appointment Fixed!", Toast.LENGTH_SHORT).show();
             mDialog.show();
             Button dialogBtn = mDialog.findViewById(R.id.dialogBtn);
             dialogBtn.setOnClickListener(new View.OnClickListener() {

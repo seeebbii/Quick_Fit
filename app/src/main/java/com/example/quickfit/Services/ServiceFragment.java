@@ -31,6 +31,8 @@ import com.example.quickfit.Brands.BrandsCustomAdapter;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
+import com.example.quickfit.SharedPref;
+import com.google.android.gms.maps.model.Dash;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,6 +170,7 @@ public class ServiceFragment extends Fragment{
 
                 userRequest.execute(method,userId,userName,userEmail, userPhone, brandId, brandName, serviceId, serviceName, userLat, userLong);
                 dialog.dismiss();
+
             }
         });
     }

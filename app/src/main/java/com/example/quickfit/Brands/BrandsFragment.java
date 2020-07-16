@@ -78,7 +78,6 @@ public class BrandsFragment extends Fragment {
         brands = new ArrayList<BrandItemsModel>();
 
         customAdapter = new BrandsCustomAdapter(brands, getContext());
-        gridView.setAdapter(customAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -137,8 +136,14 @@ public class BrandsFragment extends Fragment {
                                 BrandItemsModel object = new BrandItemsModel(brandImage, substring, id);
                                 brands.add(object);
                             }
-                            // Refreshing data
-                            customAdapter.notifyDataSetChanged();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gridView.setAdapter(customAdapter);
+                                    // Refreshing data
+                                    customAdapter.notifyDataSetChanged();
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

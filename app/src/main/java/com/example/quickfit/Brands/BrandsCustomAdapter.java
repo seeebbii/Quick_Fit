@@ -23,7 +23,7 @@ public class BrandsCustomAdapter extends BaseAdapter implements Filterable {
     private List<BrandItemsModel> brandModelList;
     public static List<BrandItemsModel> brandModelListFiltered;
     private Context context;
-    ImageView brandImage ;
+    //ImageView brandImage ;
     TextView brandName ;
     String url ;
 
@@ -53,21 +53,24 @@ public class BrandsCustomAdapter extends BaseAdapter implements Filterable {
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewHolder viewHolder = null;
+        if(view == null) {
+            viewHolder = new ViewHolder();
+            view = inflater.inflate(R.layout.brands_row_model, null);
+            viewHolder.brandImage = view.findViewById(R.id.brand_image);
+            view.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder) view.getTag();
+        }
+            brandName = view.findViewById(R.id.brand_name);
+            url = brandModelListFiltered.get(position).getBrandImage();
+            brandName.setText(brandModelListFiltered.get(position).getBrandName());
 
-        View rootView = inflater.inflate(R.layout.brands_row_model,null);
-        brandImage = rootView.findViewById(R.id.brand_image);
-        brandName = rootView.findViewById(R.id.brand_name);
-        url = brandModelListFiltered.get(position).getBrandImage();
+            Picasso.get()
+                    .load("http://sania.co.uk/quick_fix/brands/"+url)
+                    .into(viewHolder.brandImage);
 
-        brandName.setText(brandModelListFiltered.get(position).getBrandName());
-
-        Picasso.get()
-                .load("http://sania.co.uk/quick_fix/brands/"+url)
-                .into(brandImage);
-
-
-
-        return rootView;
+        return view;
     }
 
 
@@ -101,5 +104,8 @@ public class BrandsCustomAdapter extends BaseAdapter implements Filterable {
             }
         };
         return filter;
+    }
+    private class ViewHolder {
+        public ImageView brandImage;
     }
 }

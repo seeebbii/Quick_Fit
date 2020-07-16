@@ -7,16 +7,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.quickfit.MyFirebaseMessagingService;
 import com.example.quickfit.R;
+import com.example.quickfit.SharedPref;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,11 +49,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     EditText regUsername, regEmail, regPhone, regPass, regRePass;
     Button signUpBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +69,11 @@ public class RegisterActivity extends AppCompatActivity {
         regRePass = findViewById(R.id.regRePass);
         signUpBtn = findViewById(R.id.signUpBtn);
 
+
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyBoard();
                 if(regUsername.getText().toString().isEmpty() || regEmail.getText().toString().isEmpty() || regPass.getText().toString().isEmpty() || regRePass.getText().toString().isEmpty() || regPhone.getText().toString().isEmpty()){
                     Toast.makeText(RegisterActivity.this, "Please Enter all details", Toast.LENGTH_SHORT).show();
                 }else{
@@ -77,6 +102,22 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
+
+    public void hideKeyBoard() {
+        try {
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public class GetRegisterResponse extends AsyncTask< String, Void, String> {
 
@@ -143,10 +184,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
             if(result.equals("Email already exists")){
+                Toast.makeText(context, "Email already exists", Toast.LENGTH_SHORT).show();
                 regEmail.setError("Required");
             }else if(result.equals("Phone number already exists")){
+                Toast.makeText(context, "Phone number already exists", Toast.LENGTH_SHORT).show();
                 regPhone.setError("Required!");
             }else if(result.equals("Your Account created successfully")){
                 Toast.makeText(context, "Account created successfully...!", Toast.LENGTH_SHORT).show();
