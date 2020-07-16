@@ -212,7 +212,7 @@ public class BrandsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                customAdapter.getFilter().filter(newText.toUpperCase());
+                customAdapter.getFilter().filter(newText);
                 return true;
             }
         });
