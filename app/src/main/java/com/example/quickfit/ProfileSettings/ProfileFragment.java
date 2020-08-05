@@ -41,6 +41,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.quickfit.ChatActivity;
 import com.example.quickfit.DashboardActivity;
 import com.example.quickfit.MainActivity;
 import com.example.quickfit.R;
@@ -59,7 +60,7 @@ public class ProfileFragment extends Fragment {
     ImageView userImage;
     TextView id, statusCode;
     EditText name, email, phone;
-    Button btnLogOut, updateProfileBtn;
+    Button btnLogOut, updateProfileBtn, btnchat;
     private final int IMAGE_REQUEST = 1;
     Bitmap userImageBitmap;
     String url;
@@ -76,6 +77,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         userImage = view.findViewById(R.id.userImage);
         btnLogOut = view.findViewById(R.id.btnLogOut);
+        btnchat = view.findViewById(R.id.btnChat);
 
         url = SharedPref.getPreferences("user_image", getContext());
         url = url.replace(" ", "%20");
@@ -122,11 +124,21 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+
+
         updateProfileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 updateProfile();
+            }
+        });
+
+        btnchat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext() , ChatActivity.class);
+                startActivity(intent);
             }
         });
 
