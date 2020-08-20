@@ -12,7 +12,9 @@
         android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:src="@drawable/ic_baseline_check" />
+        android:paddingLeft="15dp"
+        android:background="@drawable/roundtick"
+        android:src="@drawable/tick" />
 
     <TextView
         android:id="@+id/thanks"
@@ -41,8 +43,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
+        android:textColor="@color/colorWhite"
         android:layout_centerHorizontal="true"
         android:text="OKAY"
+        android:background="@drawable/bg_ui"
         android:id="@+id/dialogBtn"
         android:layout_marginTop="25dp"/>
 

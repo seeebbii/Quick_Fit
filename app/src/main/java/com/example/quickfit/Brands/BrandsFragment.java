@@ -82,7 +82,6 @@ public class BrandsFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                searchItem.collapseActionView();
                 // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
                 String brandName = BrandsCustomAdapter.brandModelListFiltered.get(position).getBrandName();
                 int brandId = BrandsCustomAdapter.brandModelListFiltered.get(position).getId();

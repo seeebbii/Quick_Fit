@@ -82,12 +82,10 @@ public class ProfileFragment extends Fragment {
         url = SharedPref.getPreferences("user_image", getContext());
         url = url.replace(" ", "%20");
 
-        id = view.findViewById(R.id.userId);
         name = view.findViewById(R.id.userName);
         email = view.findViewById(R.id.userEmail);
-        statusCode = view.findViewById(R.id.userStatusCode);
         phone = view.findViewById(R.id.userPhone);
-        updateProfileBtn = view.findViewById(R.id.updateProfileBtn);
+        //updateProfileBtn = view.findViewById(R.id.updateProfileBtn);
 
         Picasso.get()
                 .load("http://sania.co.uk/quick_fix/"+url)
@@ -109,10 +107,10 @@ public class ProfileFragment extends Fragment {
 
 
 
-        id.setText(DashboardActivity.CURRENT_USER.getId()+"");
+        //id.setText(DashboardActivity.CURRENT_USER.getId()+"");
         name.setText(DashboardActivity.CURRENT_USER.getName());
         email.setText(DashboardActivity.CURRENT_USER.getEmail());
-        statusCode.setText(DashboardActivity.CURRENT_USER.getStatusCode());
+       // statusCode.setText(DashboardActivity.CURRENT_USER.getStatusCode());
         phone.setText(DashboardActivity.CURRENT_USER.getPhone());
 
         btnLogOut.setOnClickListener(new View.OnClickListener() {
@@ -126,13 +124,13 @@ public class ProfileFragment extends Fragment {
 
 
 
-        updateProfileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                updateProfile();
-            }
-        });
+//        updateProfileBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                updateProfile();
+//            }
+//        });
 
         btnchat.setOnClickListener(new View.OnClickListener() {
             @Override

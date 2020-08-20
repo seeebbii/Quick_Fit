@@ -61,8 +61,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageButton btRegister;
-    private TextView tvLogin;
+    private Button btRegister;
     private Button loginBtn;
     private EditText USERNAME;
     private EditText PASSWORD;
@@ -76,7 +75,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         btRegister = findViewById(R.id.btnRegister);
-        tvLogin = findViewById(R.id.tvLogin);
         btRegister.setOnClickListener(this);
         loginBtn = findViewById(R.id.loginBtn);
         USERNAME = findViewById(R.id.username);

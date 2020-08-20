@@ -90,7 +90,6 @@ public class ServiceFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // BRANDS MODEL LIST FILTERED IS FROM BRAND CUSTOM ADAPTER MADE STATIC
-                searchItem.collapseActionView();
                 if(getArguments()!= null){
                     Bundle bundle = getArguments();
                     brandId = bundle.getString("brandId");

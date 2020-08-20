@@ -1,91 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bgbf"
     tools:context=".ProfileSettings.ProfileFragment">
+
 
     <ImageView
         android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:id="@+id/userImage"/>
-    
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/userImage"
-        android:id="@+id/userId"
-        android:textSize="25sp"
-        android:text="id"
-        android:layout_centerHorizontal="true"/>
+        android:src="@drawable/quickfitlogo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.062" />
 
-    <EditText
-        android:id="@+id/userName"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userId"
-        android:layout_centerHorizontal="true"
-        android:hint="Name"
-        android:textSize="25sp" />
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userName"
-        android:id="@+id/userEmail"
-        android:textSize="25sp"
-        android:hint="Email"
-        android:layout_centerHorizontal="true"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userEmail"
-        android:id="@+id/userStatusCode"
-        android:textSize="25sp"
-        android:text="Status code"
-        android:layout_centerHorizontal="true"/>
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userStatusCode"
-        android:id="@+id/userPhone"
-        android:textSize="25sp"
-        android:hint="Phone"
-        android:layout_centerHorizontal="true"/>
+        android:layout_height="300dp"
+        android:layout_marginBottom="464dp"
+        android:src="@drawable/style"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log out"
-        android:id="@+id/btnLogOut"
-        android:layout_below="@+id/userPhone"
-        android:layout_centerHorizontal="true"/>
+    <ImageView
+        android:layout_width="127dp"
+        android:layout_height="150dp"
+        android:background="@drawable/round"
+        android:id="@+id/userImage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.288" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnChat"
-        android:layout_below="@id/btnLogOut"
-        android:text="Support Chat"
-        android:layout_marginTop="25dp"
-        android:layout_centerHorizontal="true" />
-    
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnChat"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:text="Update Profile"
-        android:id="@+id/updateProfileBtn"/>
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.578">
 
-</RelativeLayout>
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:layout_gravity="center"
+            android:id="@+id/userEmail"
+            android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:drawablePadding="15dp"
+            android:hint="Email" />
+
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:id="@+id/userName"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_baseline_person_pin_24"
+            android:drawablePadding="15dp"
+            android:hint="Full Name" />
+
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:id="@+id/userPhone"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_baseline_call_24"
+            android:drawablePadding="15dp"
+            android:hint="Phone Number" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnLogOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_ui"
+                android:text="Log Out" />
+
+            <Button
+                android:id="@+id/btnChat"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:background="@drawable/fgpass"
+                android:text="Support Chat" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
